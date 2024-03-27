@@ -1,6 +1,6 @@
 #!/usr/bin/env python
+import datetime
 import logging
-from datetime import datetime
 from warnings import warn
 
 import pytz
@@ -64,7 +64,7 @@ class PayPalDateTimeField(forms.DateTimeField):
         if value in self.empty_values:
             return None
 
-        if isinstance(value, datetime):
+        if isinstance(value, datetime.datetime):
             return value
 
         value = value.strip()
@@ -77,7 +77,7 @@ class PayPalDateTimeField(forms.DateTimeField):
             day = int(day_part)
             year = int(year_part)
             hour, minute, second = map(int, time_part.split(":"))
-            dt = datetime(year, month, day, hour, minute, second)
+            dt = datetime.datetime(year, month, day, hour, minute, second)
         except ValueError as e:
             raise ValidationError(
                 _("Invalid date format %(value)s: %(e)s"),
@@ -89,7 +89,7 @@ class PayPalDateTimeField(forms.DateTimeField):
             # PST/PDT is 'US/Pacific'
             dt = pytz.timezone("US/Pacific").localize(dt, is_dst=zone_part == "PDT")
             if not settings.USE_TZ:
-                dt = timezone.make_naive(dt, timezone=timezone.utc)
+                dt = timezone.make_naive(dt, timezone=datetime.timezone.utc)
         return dt
 
 
